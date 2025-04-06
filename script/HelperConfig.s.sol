@@ -12,6 +12,7 @@ abstract contract CodeConstants {
 
 contract HelperConfig is Script, CodeConstants {
     NetworkConfig public activeNetworkConfig;
+
     struct NetworkConfig {
         uint256 deployerKey;
         string chainName;
@@ -24,11 +25,7 @@ contract HelperConfig is Script, CodeConstants {
         }
     }
 
-    function getOrCreateAnvilEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory anvilNetworkConfig)
-    {
+    function getOrCreateAnvilEthConfig() public pure returns (NetworkConfig memory anvilNetworkConfig) {
         //First, we shoukd check to see if we already have an active network config. But for now since we only have anvil we won't implement it
         //To-Do in the future
         /*
@@ -37,10 +34,6 @@ contract HelperConfig is Script, CodeConstants {
         }
         */
 
-        anvilNetworkConfig = NetworkConfig({
-            deployerKey: DEFAULT_ANVIL_PRIVATE_KEY,
-            chainName: "Anvil",
-            chainID: 31337
-        });
+        anvilNetworkConfig = NetworkConfig({deployerKey: DEFAULT_ANVIL_PRIVATE_KEY, chainName: "Anvil", chainID: 31337});
     }
 }

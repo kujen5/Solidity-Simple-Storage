@@ -31,12 +31,9 @@ contract SimpleStorageTest is Test {
         //Act
         simpleStorage.addPerson(username, secretNumber);
         //Assert
-        uint256 retrieveSecretNumber = simpleStorage.getSecretNumberFromPerson(
-            username
-        );
+        uint256 retrieveSecretNumber = simpleStorage.getSecretNumberFromPerson(username);
         assertEq(retrieveSecretNumber, secretNumber);
-        string memory retrievedUsername = simpleStorage
-            .getPersonFromSecretNumber(secretNumber);
+        string memory retrievedUsername = simpleStorage.getPersonFromSecretNumber(secretNumber);
         assertEq(retrievedUsername, username);
     }
 
@@ -49,16 +46,9 @@ contract SimpleStorageTest is Test {
         simpleStorage.addPerson(username, secretNumber);
 
         //Assert
-        SimpleStorage.Person[] memory listOfPeople = simpleStorage
-            .getCurrentListOfPeople();
+        SimpleStorage.Person[] memory listOfPeople = simpleStorage.getCurrentListOfPeople();
         SimpleStorage.Person memory firstPerson = listOfPeople[0];
-        assertEq(
-            keccak256(abi.encodePacked(firstPerson.username)),
-            keccak256(abi.encodePacked(username))
-        );
-        assertEq(
-            keccak256(abi.encodePacked(firstPerson.secretNumber)),
-            keccak256(abi.encodePacked(secretNumber))
-        );
+        assertEq(keccak256(abi.encodePacked(firstPerson.username)), keccak256(abi.encodePacked(username)));
+        assertEq(keccak256(abi.encodePacked(firstPerson.secretNumber)), keccak256(abi.encodePacked(secretNumber)));
     }
 }
