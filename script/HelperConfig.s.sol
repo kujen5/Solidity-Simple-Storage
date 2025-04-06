@@ -11,6 +11,36 @@ abstract contract CodeConstants {
 }
 
 contract HelperConfig is Script, CodeConstants {
-    //to be implemented at a later date - written on 04/06/2025
-    function run() external {}
+    NetworkConfig public activeNetworkConfig;
+    struct NetworkConfig {
+        uint256 deployerKey;
+        string chainName;
+        uint256 chainID;
+    }
+
+    constructor() {
+        if (block.chainid == 31337) {
+            activeNetworkConfig = getOrCreateAnvilEthConfig();
+        }
+    }
+
+    function getOrCreateAnvilEthConfig()
+        public
+        pure
+        returns (NetworkConfig memory anvilNetworkConfig)
+    {
+        //First, we shoukd check to see if we already have an active network config. But for now since we only have anvil we won't implement it
+        //To-Do in the future
+        /*
+        if (activeNetworkConfig.differentConfig != address(0)) {
+            return activeNetworkConfig;
+        }
+        */
+
+        anvilNetworkConfig = NetworkConfig({
+            deployerKey: DEFAULT_ANVIL_PRIVATE_KEY,
+            chainName: "Anvil",
+            chainID: 31337
+        });
+    }
 }
