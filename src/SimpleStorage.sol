@@ -6,16 +6,14 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {console} from "forge-std/Test.sol";
 
 contract SimpleStorage is Ownable {
-    constructor() Ownable(msg.sender) {}
+    /*//////////////////////////////////////////////////////////////
+                                 ERRORS
+    //////////////////////////////////////////////////////////////*/
+    error SimpleStorage__UserDoesNotExist();
 
-    uint256 secretNumber;
-
-    struct Person {
-        // New struct for the people data (usernaame, secretNumber)
-        string username;
-        uint256 secretNumber;
-    }
-    //mapping()
+    /*//////////////////////////////////////////////////////////////
+                                 TYPES
+    //////////////////////////////////////////////////////////////*/
 
     Person[] listOfPeople; // Array of people of type Person
 
@@ -25,8 +23,41 @@ contract SimpleStorage is Ownable {
     Person { username: "Bob", secretNumber: 24 }
     ]
     */
+
+    struct Person {
+        // New struct for the people data (usernaame, secretNumber)
+        string username;
+        uint256 secretNumber;
+    }
+    //mapping()
+    /*//////////////////////////////////////////////////////////////
+                            STATE VARIABLES
+    //////////////////////////////////////////////////////////////*/
+
+    uint256 secretNumber;
+
+    /*//////////////////////////////////////////////////////////////
+                                MAPPINGS
+    //////////////////////////////////////////////////////////////*/
+
     mapping(string => uint256) public nameToSecretoNumber;
     mapping(uint256 => string) public secretNumberToNumber;
+
+    /*//////////////////////////////////////////////////////////////
+                                 EVENTS
+    //////////////////////////////////////////////////////////////*/
+    event UserAdded(string username, uint256 secretNumber);
+
+    /*//////////////////////////////////////////////////////////////
+                               MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
+    //We have none implemented for the moment.
+
+    /*//////////////////////////////////////////////////////////////
+                               FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+    constructor() Ownable(msg.sender) {}
 
     function store(uint256 _secretNumber) public {
         secretNumber = _secretNumber;
@@ -42,6 +73,7 @@ contract SimpleStorage is Ownable {
         nameToSecretoNumber[_username] = _secretNumber;
         secretNumberToNumber[_secretNumber] = _username;
         console.log("The username: %s and the secret number: %s have been stored.", _username, _secretNumber);
+        emit UserAdded(_username, _secretNumber);
     }
 
     function getCurrentListOfPeople() public view returns (Person[] memory) {
