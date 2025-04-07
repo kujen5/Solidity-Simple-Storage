@@ -1,12 +1,12 @@
 # Solidity Simple Storage
 
-``Solidity Simple Storage`` is a project that aims to familiarize you with Solidity and Smart Contract concepts. It consists of basic features allowing the user to store a number and retrieve it, to be able to add a user through its' username and secret number and retrieve that struct. Moreover, it aims at showcasing how we can create a Deployer script for our smart contract to automatically deploy it on-chain with the help of a HelperConfig for automatic configuration setup.
+`Solidity Simple Storage` is a project that aims to familiarize you with Solidity and Smart Contract concepts. It consists of basic features allowing the user to store a number and retrieve it, to be able to add a user through its' username and secret number and retrieve that struct. Moreover, it aims at showcasing how we can create a Deployer script for our smart contract to automatically deploy it on-chain with the help of a HelperConfig for automatic configuration setup.
 ## Getting Started
 
 ### Requirements
 
 - [foundry](https://getfoundry.sh/)
-    - You will know your installation is successful if you can run ``forge --version``.
+    - You will know your installation is successful if you can run `forge --version`
 
 ### Setup
 
@@ -15,13 +15,32 @@ Clone this repository:
 git clone https://github.com/kujen5/Solidity-Simple-Storage
 ```
 
+Create and setup an account on https://etherscan.io/ to claim an Etherscan API key.
+
+Create and setup and account on https://dashboard.alchemy.com/ to be able to create an application using Ethereum Sepolia and finally claim your Sepolia RPC Url.
+
+Create an account on https://metamask.io/ and setup a wallet to be able to claim your private key. You can also add metamask as a plugin in your browser.
+
+Go to your Metamask wallet => Show test networks => select Sepolia. We'll be needing it.
+
+Create an `.env` file where you put your private keys and API keys like this:
+```
+DEFAULT_ANVIL_PRIVATE_KEY=<value>
+ETHEREUM_SEPOLIA_PRIVATE_KEY=<value>
+ETHERSCAN_API_KEY=<value>
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/<value>
+```
+
+Finally, source your `.env` file: `source .env` or you could just use your Makefile command which will source it automatically.
+
+
 ## Usage
-1. Setup your ``anvil`` chain by running this command in your terminal:
+1. Setup your `anvil` chain by running this command in your terminal:
 ```bash
 anvil
 ```
 
-You will find an RPC URL (``http://127.0.0.1:8545`` by default) and multiple accounts associated with their corresponding private keys. Choose a private key to work with. (The first account private key is hardcoded in the ``HelperConfig.s.sol`` file).
+You will find an RPC URL (`http://127.0.0.1:8545` by default) and multiple accounts associated with their corresponding private keys. Choose a private key to work with. (The first account private key is hardcoded in the `HelperConfig.s.sol` file).
 
 
 2. Compile your code:
@@ -31,19 +50,41 @@ Run:
 forge compile
 ```
 
+Or:
+
+```bash
+make compile
+```
+
 3. Deploying the contract to the Anvil local chain:
 
-Run
+Run:
 
 ```bash
 forge script script/DeploySimpleStorage.s.sol --rpc-url http://127.0.0.1:8545  --broadcast
 ```
 
-You can now interact with your contract on chain!
+Or: 
+```bash
+make deploy
+```
 
-## Interacting with the Smart Contract
+4. Deploying the contract to the Ethereum Sepolia testnet:
 
-### Adding a secretNumber
+Run:
+```bash
+forge script script/DeploySimpleStorage.s.sol:DeploySimpleStorage --rpc-url $(SEPOLIA_RPC_URL) --private-key $(ETHEREUM_SEPOLIA_PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+```
+
+Or:
+```bash
+make deploy ARGS="--network ethsepolia"
+```
+You can now interact with your contract on chain by grabbing your contract's address and putting it in https://sepolia.etherscan.io/
+
+### Interacting with the Smart Contract
+
+#### Adding a secretNumber
 
 Run:
 ```bash
@@ -69,7 +110,7 @@ authorizationList
 to                      0x5FbDB2315678afecb367f032d93F642f64180aa3
 ```
 
-### Retrieving the stored secretNumber
+#### Retrieving the stored secretNumber
 
 Run:
 
@@ -85,7 +126,7 @@ $ cast --to-base 0x0000000000000000000000000000000000000000000000000000000000000
 1337
 ```
 
-### Adding a Person (username, secretNumber)
+#### Adding a Person (username, secretNumber)
 
 Run:
 
@@ -94,9 +135,9 @@ $ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "getCurrentListOfPeople()
 0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000539000000000000000000000000000000000000000000000000000000000000000730786b756a656e00000000000000000000000000000000000000000000000000
 ```
 
-We can verify the value with [this cyberchef recipe](https://cyberchef.io/#recipe=From_Hex('Auto')&input=MHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDUzOTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDczMDc4NmI3NTZhNjU2ZTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw) since the hex is too long for the ``cast`` command.
+We can verify the value with [this cyberchef recipe](https://cyberchef.io/#recipe=From_Hex('Auto')&input=MHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDUzOTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDczMDc4NmI3NTZhNjU2ZTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw) since the hex is too long for the `cast` command.
 
-### Retrieving a person from their secretNumber (Yeah this is not secure but for the sake of learning lol)
+#### Retrieving a person from their secretNumber (Yeah this is not secure but for the sake of learning lol)
 
 Run:
 
@@ -105,7 +146,7 @@ $ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "getPersonFromSecretNumbe
 0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000730786b756a656e00000000000000000000000000000000000000000000000000
 ```
 
-### Retrieving a secretNumber from the person name
+#### Retrieving a secretNumber from the person name
 
 Run:
 
@@ -141,11 +182,11 @@ The current test coverage is at 100% with unit tests:
 
 
 
-## To-Do
+## TODO
 
-- Implement more tests (Fuzz Tests / Intergration Tests / Mutations Tests) to better test our code. 100% apparent coverage is not enough.
-- Implement Network Configurations for ZkSync Sepolia, Arbitrum Sepolia, and other networks.
-- Add more features.
+- [ ] Implement more tests (Fuzz Tests / Intergration Tests / Mutations Tests) to better test our code. 100% apparent coverage is not enough.
+- [ ] Implement Network Configurations for ZkSync Sepolia, Arbitrum Sepolia, and other networks.
+- [ ] Add more features.
 
 ## Thank you!
 

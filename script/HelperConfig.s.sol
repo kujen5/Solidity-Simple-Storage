@@ -6,8 +6,6 @@ import {Script, console2} from "forge-std/Script.sol";
 abstract contract CodeConstants {
     uint256 public constant LOCAL_ANVIL_CHAIN_ID = 31337;
     uint256 public constant ETHEREUM_SEPOLIA_CHAIN_ID = 11155111;
-    uint256 public constant DEFAULT_ANVIL_PRIVATE_KEY =
-        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 }
 
 contract HelperConfig is Script, CodeConstants {
@@ -20,20 +18,30 @@ contract HelperConfig is Script, CodeConstants {
     }
 
     constructor() {
-        if (block.chainid == 31337) {
+        if (block.chainid == 11155111) {
+            activeNetworkConfig = getEthSepoliaConfig();
+        } else {
             activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
 
-    function getOrCreateAnvilEthConfig() public pure returns (NetworkConfig memory anvilNetworkConfig) {
-        //First, we shoukd check to see if we already have an active network config. But for now since we only have anvil we won't implement it
-        //To-Do in the future
-        /*
-        if (activeNetworkConfig.differentConfig != address(0)) {
+    function getOrCreateAnvilEthConfig() public view returns (NetworkConfig memory anvilNetworkConfig) {
+        if (activeNetworkConfig.chainID == 11155111) {
             return activeNetworkConfig;
         }
-        */
 
-        anvilNetworkConfig = NetworkConfig({deployerKey: DEFAULT_ANVIL_PRIVATE_KEY, chainName: "Anvil", chainID: 31337});
+        anvilNetworkConfig = NetworkConfig({
+            deployerKey: vm.envUint("DEFAULT_ANVIL_PRIVATE_KEY"),
+            chainName: "Anvil",
+            chainID: LOCAL_ANVIL_CHAIN_ID
+        });
+    }
+
+    function getEthSepoliaConfig() public view returns (NetworkConfig memory ethSepoliaNetworkConfig) {
+        ethSepoliaNetworkConfig = NetworkConfig({
+            deployerKey: vm.envUint("ETHEREUM_SEPOLIA_PRIVATE_KEY"),
+            chainName: "Ethereum Sepolia",
+            chainID: ETHEREUM_SEPOLIA_CHAIN_ID
+        });
     }
 }
