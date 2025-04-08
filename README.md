@@ -164,7 +164,7 @@ $ cast --to-base 0x0000000000000000000000000000000000000000000000000000000000000
 
 ## Test Coverage
 
-The current test coverage is at 100% with unit tests:
+The current test coverage is at ~90% with unit tests:
 
 ```
 ╭----------------------------------+-----------------+-----------------+---------------+---------------╮
